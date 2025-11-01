@@ -1,0 +1,18 @@
+# GLiNER PII Server - Project Configuration
+# This project uses a flat module structure with requirements files.
+# For installation, use: uv pip install -r requirements.txt
+
+[project]
+name = "gliner-pii-server"
+version = "1.0.0"
+description = "GLiNER PII Detection HTTP Server with chunking and parallel processing"
+readme = "README.md"
+requires-python = ">=3.11"
+
+# Note: This project uses requirements.txt and requirements-client.txt
+# for dependency management due to its flat module structure.
+# 
+# To install:
+#   uv pip install -r requirements.txt              # Server
+#   uv pip install -r requirements-client.txt       # Client
+
