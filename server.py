@@ -395,10 +395,10 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python server.py
-  python server.py -m urchade/gliner_medium-v2.1 -t 0.5
-  python server.py -m urchade/gliner_large-v2.1 -t 0.6 --no-filter
-  python server.py -p 8080 --reload
+  gliner-server
+  gliner-server -m urchade/gliner_medium-v2.1 -t 0.5
+  gliner-server -m urchade/gliner_large-v2.1 -t 0.6 --no-filter
+  gliner-server -p 8080 --reload
 
 Available Models:
   urchade/gliner_small-v2.1   - Fastest, good accuracy (default)
@@ -462,7 +462,8 @@ API Docs: http://localhost:8000/docs
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+def main():
+    """Start the GLiNER PII detection server."""
     args = parse_args()
     
     # Print banner
@@ -501,4 +502,8 @@ if __name__ == "__main__":
     )
     server = uvicorn.Server(config)
     server.run()
+
+
+if __name__ == "__main__":
+    main()
 

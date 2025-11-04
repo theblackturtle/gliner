@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 GLiNER PII Detection Client CLI
 
@@ -8,16 +8,14 @@ Command-line client for interacting with the GLiNER HTTP server.
 import os
 import json
 import sys
-from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
 import click
 import requests
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
 from rich.tree import Tree
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, DownloadColumn, TransferSpeedColumn
+from rich.progress import Progress, SpinnerColumn, TextColumn
 
 console = Console()
 
@@ -203,77 +201,6 @@ def info(server: str):
 
 
 @cli.command()
-@click.argument('file', type=click.Path(exists=True))
-@click.option('--server', default=DEFAULT_SERVER, help='Server URL')
-@click.option('--labels', help='Comma-separated PII labels')
-@click.option('--threshold', type=float, default=0.3, help='Confidence threshold (0.0-1.0)')
-@click.option('--chunk-size', type=int, default=8000, help='Characters per chunk')
-@click.option('--batch-size', type=int, default=8, help='Chunks to process in parallel')
-@click.option('--max-file-size', type=float, default=50.0, help='Maximum file size in MB')
-@click.option('--extended-labels', is_flag=True, help='Use extended label set')
-@click.option('--output', '-o', type=click.Path(), help='Save results to JSON file')
-@click.option('--show-all', is_flag=True, help='Show all files including those without PII')
-def upload(
-    file: str,
-    server: str,
-    labels: Optional[str],
-    threshold: float,
-    chunk_size: int,
-    batch_size: int,
-    max_file_size: float,
-    extended_labels: bool,
-    output: Optional[str],
-    show_all: bool
-):
-    """Upload and scan a file for PII."""
-    file_path = Path(file)
-    file_size_mb = file_path.stat().st_size / (1024 * 1024)
-    
-    console.print(f"[cyan]Uploading and scanning:[/cyan] {file_path.name} ({file_size_mb:.1f}MB)")
-    console.print(f"[cyan]Server:[/cyan] {server}")
-    
-    # Prepare form data
-    form_data = {
-        'threshold': str(threshold),
-        'chunk_size': str(chunk_size),
-        'batch_size': str(batch_size),
-        'max_file_size': str(max_file_size),
-        'extended_labels': 'true' if extended_labels else 'false'
-    }
-    
-    if labels:
-        form_data['labels'] = labels
-    
-    # Upload file with progress
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
-        DownloadColumn(),
-        TransferSpeedColumn(),
-        console=console
-    ) as progress:
-        task = progress.add_task("[cyan]Uploading and scanning...", total=None)
-        
-        with open(file_path, 'rb') as f:
-            files = {'file': (file_path.name, f)}
-            response = make_request('POST', '/api/v1/scan/upload', server, data=form_data, files=files)
-        
-        progress.update(task, completed=True)
-    
-    data = response.json()
-    
-    # Save to file if requested
-    if output:
-        with open(output, 'w') as f:
-            json.dump(data, f, indent=2)
-        console.print(f"[green]✓ Results saved to {output}[/green]")
-    
-    # Display results
-    display_scan_results(data, show_all)
-
-
-@cli.command()
 @click.argument('path', type=str)
 @click.option('--server', default=DEFAULT_SERVER, help='Server URL')
 @click.option('--recursive/--no-recursive', default=True, help='Recursively scan subdirectories')
@@ -344,6 +271,11 @@ def scan_path(
     display_scan_results(data, show_all)
 
 
-if __name__ == '__main__':
+def main():
+    """Run the GLiNER client CLI."""
     cli()
+
+
+if __name__ == '__main__':
+    main()
 

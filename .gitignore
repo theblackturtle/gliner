@@ -11,3 +11,5 @@ __pycache__/
 *.pyzwzwzw
 *.pyzwzwzwzw
 *.pyzwzwzwzwzw
+build/
+gliner_pii.egg-info/
