@@ -1,0 +1,54 @@
+[package]
+name = "gliner"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Rust port of the GLiNER PII detection toolkit"
+
+[lib]
+name = "gliner"
+path = "src/lib.rs"
+
+[[bin]]
+name = "gliner-server"
+path = "src/bin/server.rs"
+
+[[bin]]
+name = "gliner-client"
+path = "src/bin/client.rs"
+
+[dependencies]
+anyhow = "1.0"
+axum = { version = "0.7", features = ["macros", "json", "multipart"] }
+bytes = "1.6"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4.5", features = ["derive"] }
+console = "0.15"
+indicatif = "0.17"
+once_cell = "1.19"
+ort = { version = "2.0.0-rc.10", features = ["load-dynamic"] }
+rayon = "1.10"
+regex = "1.11"
+reqwest = { version = "0.12", features = ["json", "multipart", "stream", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+tokio = { version = "1.39", features = ["full"] }
+tokenizers = { version = "0.15", features = ["http"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+uuid = { version = "1.8", features = ["v4", "serde"] }
+walkdir = "2.5"
+ndarray = { version = "0.16", features = ["serde"] }
+encoding_rs = "0.8"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+tempfile = "3.10"
+
+[dev-dependencies]
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = "z"
+panic = "abort"
+
