@@ -117,7 +117,7 @@ def export_model(
     sample_text = (
         "This is a synthetic example sentence used to trace GLiNER for ONNX export."
     )
-    encoded = scanner.tokenizer(
+    encoded = scanner.data_processor.transformer_tokenizer(
         sample_text,
         return_tensors="pt",
         padding="max_length",
@@ -157,13 +157,14 @@ def export_model(
             input_names=input_names,
             output_names=output_names,
             dynamic_axes=dynamic_axes,
+            dynamo=False,
         )
 
     print(f"ONNX model saved to {paths['onnx']}")
 
     # Persist tokenizer assets for the Rust runtime.
     print("Saving tokenizer artefacts...")
-    tokenizer_json = scanner.tokenizer.to_str()
+    tokenizer_json = scanner.data_processor.transformer_tokenizer.backend_tokenizer.to_str()
     paths["tokenizer_json"].write_text(tokenizer_json, encoding="utf-8")
 
     tokenizer_config = {
